@@ -3,7 +3,7 @@
 AirwayParser extracts the centerline tree of a 3D airway segmentation and computes centerline-based segmentation metrics. Implementation of the paper Minimum-Cost Path Framework for 3D Airway Centerline Extraction, presented at MICCAI 2026 Workshop on Thoracic Image Analysis.
 
 <p align="center">
-<!-- drop docs/pipeline.png here -->
+<img width="2400" height="793" alt="pipeline" src="https://github.com/user-attachments/assets/11b408df-a44d-4020-b40d-782ac392ca95" />
 </p>
 
 # Installation
@@ -33,7 +33,8 @@ for b in tree.branches.values():
 
 | Backtracing | Branch point detection |
 |:-:|:-:|
-| |  |
+| <img width="680" height="800" alt="backtracing" src="https://github.com/user-attachments/assets/6b59e815-9070-45d5-84b3-1b25186cbaa4" /> | <img width="680" height="800" alt="branch_detection" src="https://github.com/user-attachments/assets/9df05b61-4a91-420c-bef1-63cfec33eaa3" /><img width="680" height="800" alt="backtracing" src="https://github.com/user-attachments/assets/8dad5b9a-8fc7-40c0-8c73-b69f08ef8093" />
+ |
 
 ### Segmentation metrics
 
