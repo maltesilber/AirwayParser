@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "airwayparser"
+version = "0.2.0"
+description = "Centerline tree extraction and analysis of 3D airway segmentations"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Malte Silbernagel"}]
+requires-python = ">=3.10"
+dependencies = ["numpy", "scipy", "numba", "scikit-fmm", "tqdm"]
+keywords = ["airway", "centerline", "skeleton", "minimum-cost path", "medical imaging"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Repository = "https://github.com/maltesilber/AirwayParser"
+
+[tool.setuptools]
+packages = ["airwayparser", "airwayparser.skeleton"]

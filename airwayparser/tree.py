@@ -22,7 +22,7 @@ class Branch:
     def is_leaf(self):
         return not self.children
 
-class BranchTree:
+class Tree:
     def __init__(self, spacing=(1.0, 1.0, 1.0)):
         self.branches = {}
         self.spacing = tuple(float(s) for s in spacing)

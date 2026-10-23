@@ -1,13 +1,14 @@
 import numpy as np
+from numba import njit
 import skfmm
 from scipy.ndimage import distance_transform_edt, label
 
-from gvf import medial_function
-from tracer import Tracer
-from tree import BranchTree
+from .gvf import medial_function
+from .tracer import Tracer
+from ..tree import Tree
 
 
-def parse_tree(mask, spacing=(1.0, 1.0, 1.0), mu=0.15, dt=0.5, max_iters=500, alpha=np.log(1e6), h=0.5, sigma_max=18.0, sigma_min=4.0, tol=2.0, verbose=True):
+def parse_tree(mask, spacing=(1.0, 1.0, 1.0), mu=0.15, dt=0.5, max_iters=500, alpha=np.log(1e6), h=0.5, sigma_max=18.0, sigma_min=3.0, tol=2.0, verbose=True):
     mask = largest_component(np.asarray(mask, bool))
     root = find_root(mask)
     m = medial_function(mask, spacing, mu, dt, max_iters, verbose)
@@ -19,8 +20,8 @@ def parse_tree(mask, spacing=(1.0, 1.0, 1.0), mu=0.15, dt=0.5, max_iters=500, al
     return build_tree(paths, tol, spacing)
 
 
-def largest_component(mask):
-    labels, _ = label(mask)
+def largest_component(mask, structure=None):
+    labels, _ = label(mask, structure)
     sizes = np.bincount(labels.ravel())
     sizes[0] = 0
     return labels == sizes.argmax()
@@ -56,23 +57,32 @@ def trace_paths(mask, travel_time, reach, dist, root, spacing, h, sigma_max, sig
         vox = np.rint(path).astype(int)
         keep = np.r_[True, np.any(vox[1:] != vox[:-1], axis=1)]  # one sphere per voxel of the path
         radii = dist[tuple(vox[keep].T)] + sigma[keep]
-        _cover(remaining, path[keep], radii, spacing)
+        _cover(remaining, path[keep], radii, np.asarray(spacing, float))
         paths.append(path)
     return paths
 
 
-def _cover(remaining, path, radii, spacing):
-    sp = np.asarray(spacing, float)
-    for p, r in zip(path, radii):
-        lo = np.maximum(np.floor(p - r / sp), 0).astype(int)
-        hi = np.minimum(np.ceil(p + r / sp) + 1, remaining.shape).astype(int)
-        box = tuple(slice(a, b) for a, b in zip(lo, hi))
-        d2 = sum(((g - c) * s) ** 2 for g, c, s in zip(np.ogrid[box], p, sp))
-        remaining[box][d2 <= r ** 2] = -1.0
+@njit(cache=True)
+def _cover(remaining, path, radii, sp):
+    n0, n1, n2 = remaining.shape
+    for t in range(len(path)):
+        px, py, pz, r = path[t, 0], path[t, 1], path[t, 2], radii[t]
+        for i in range(max(int(np.floor(px - r / sp[0])), 0), min(int(np.ceil(px + r / sp[0])) + 1, n0)):
+            ry2 = r * r - ((i - px) * sp[0]) ** 2
+            if ry2 < 0.0:
+                continue
+            ry = np.sqrt(ry2) / sp[1]
+            for j in range(max(int(np.floor(py - ry)), 0), min(int(np.ceil(py + ry)) + 1, n1)):
+                rz2 = ry2 - ((j - py) * sp[1]) ** 2
+                if rz2 < 0.0:
+                    continue
+                rz = np.sqrt(rz2) / sp[2]
+                for k in range(max(int(np.ceil(pz - rz)), 0), min(int(np.floor(pz + rz)) + 1, n2)):
+                    remaining[i, j, k] = -1.0
 
 
 def build_tree(paths, tol, spacing):
-    tree = BranchTree(spacing)
+    tree = Tree(spacing)
     _grow(tree, tree.add_branch(None, 0), paths, list(range(len(paths))), 0, tol, np.asarray(spacing, float))
     return tree
 
