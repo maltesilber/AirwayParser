@@ -28,12 +28,14 @@ tree = parse_tree(mask, spacing=(0.6, 0.6, 1.0))
 for b in tree.branches.values():
     print(b.id, b.parent, b.generation, len(b.points))
 ```
-
 `parse_tree` traces a minimum-cost path from every terminal branch back to the trachea and merges the paths into a tree of branches with parent/child relations and generation numbers.
-
+<div align="center">
+    
 | Backtracing | Branch point detection |
 |:-:|:-:|
 | <img width="340" height="400" alt="backtracing" src="https://github.com/user-attachments/assets/7d54db08-3228-47f7-8e4e-689e4f67d341" /> | <img width="340" height="400" alt="branch_detection" src="https://github.com/user-attachments/assets/233a6edc-79ed-4070-8ea2-9c283d0cd26b" /> |
+
+</div>
 
 ### Segmentation metrics
 
