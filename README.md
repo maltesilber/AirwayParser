@@ -33,7 +33,7 @@ for b in tree.branches.values():
 
 | Backtracing | Branch point detection |
 |:-:|:-:|
-| <img width="680" height="800" alt="backtracing" src="https://github.com/user-attachments/assets/6b59e815-9070-45d5-84b3-1b25186cbaa4" /> | <img width="680" height="800" alt="branch_detection" src="https://github.com/user-attachments/assets/9df05b61-4a91-420c-bef1-63cfec33eaa3" /> |
+| <img width="340" height="400" alt="backtracing" src="https://github.com/user-attachments/assets/7d54db08-3228-47f7-8e4e-689e4f67d341" /> | <img width="340" height="400" alt="branch_detection" src="https://github.com/user-attachments/assets/233a6edc-79ed-4070-8ea2-9c283d0cd26b" /> |
 
 ### Segmentation metrics
 
